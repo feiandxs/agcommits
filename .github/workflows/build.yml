@@ -19,13 +19,13 @@ jobs:
           go-version: '1.21.4'
 
       - name: Build Windows binary
-        run: GOOS=windows GOARCH=amd64 go build -o agcommits-windows-amd64.exe ./main
+        run: GOOS=windows GOARCH=amd64 go build -o agcommits-windows-amd64.exe ./
 
       - name: Build Unix binary
-        run: GOOS=linux GOARCH=amd64 go build -o agcommits-unix-amd64 ./main
+        run: GOOS=linux GOARCH=amd64 go build -o agcommits-unix-amd64 ./
 
       - name: Build macOS binary
-        run: GOOS=darwin GOARCH=amd64 go build -o agcommits-macos-amd64 ./main
+        run: GOOS=darwin GOARCH=amd64 go build -o agcommits-macos-amd64 ./
 
       - name: Create Release
         id: create_release
