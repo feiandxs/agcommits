@@ -3,9 +3,9 @@
 package openai_api
 
 import (
-	"agcommits/utils" // 导入 utils 包以使用 Config 结构体
 	"context"
 	"fmt"
+	"github.com/feiandxs/agcommits/utils" // 导入 utils 包以使用 Config 结构体
 	"github.com/sashabaranov/go-openai"
 )
 
