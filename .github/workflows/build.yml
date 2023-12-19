@@ -44,7 +44,7 @@ jobs:
       - name: Upload Windows binary
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./agcommits-windows-amd64.exe
@@ -54,7 +54,7 @@ jobs:
       - name: Upload Unix binary
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./agcommits-unix-amd64
