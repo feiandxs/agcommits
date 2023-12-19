@@ -27,9 +27,6 @@ jobs:
       - name: Build macOS binary
         run: GOOS=darwin GOARCH=amd64 go build -o agcommits-macos-amd64 ./main
 
-      - name: Print Token
-        run: echo ${{ secrets.DEPLOY_TOKEN }}
-
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -64,7 +61,7 @@ jobs:
       - name: Upload macOS binary
         uses: actions/upload-release-asset@v1
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./agcommits-macos-amd64
