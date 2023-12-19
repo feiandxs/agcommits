@@ -1,0 +1,75 @@
+name: Build and Release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    name: Build and Release
+    runs-on: ubuntu-latest
+    if: github.ref.startsWith('refs/tags/v') && github.ref.startsWith('refs/heads/main')
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: '1.20'
+
+      - name: Build Windows binary
+        run: GOOS=windows GOARCH=amd64 go build -o agcommits-windows-amd64.exe ./main
+
+      - name: Build Unix binary
+        run: GOOS=linux GOARCH=amd64 go build -o agcommits-unix-amd64 ./main
+
+      - name: Build macOS binary
+        run: GOOS=darwin GOARCH=amd64 go build -o agcommits-macos-amd64 ./main
+
+      - name: Print Token
+        run: echo ${{ secrets.DEPLOY_TOKEN }}
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Windows binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./agcommits-windows-amd64.exe
+          asset_name: agcommits-windows-amd64.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload Unix binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./agcommits-unix-amd64
+          asset_name: agcommits-unix-amd64
+          asset_content_type: application/octet-stream
+
+      - name: Upload macOS binary
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./agcommits-macos-amd64
+          asset_name: agcommits-macos-amd64
+          asset_content_type: application/octet-stream
