@@ -1,8 +1,8 @@
 package openai_api
 
 import (
-	"agcommits/utils"
 	"fmt"
+	"github.com/feiandxs/agcommits/utils"
 )
 
 // 提交类型到格式的映射

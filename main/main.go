@@ -1,9 +1,9 @@
 package main
 
 import (
-	"agcommits/service/openai_api"
-	"agcommits/utils"
 	"fmt"
+	"github.com/feiandxs/agcommits/service/openai_api"
+	"github.com/feiandxs/agcommits/utils"
 	"os"
 	"os/user"
 	"path/filepath"
