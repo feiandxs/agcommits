@@ -2,8 +2,6 @@ name: Build and Release
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
 
@@ -11,7 +9,6 @@ jobs:
   build:
     name: Build and Release
     runs-on: ubuntu-latest
-    if: github.ref.startsWith('refs/tags/v') && github.ref.startsWith('refs/heads/main')
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
