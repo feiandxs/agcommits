@@ -1,4 +1,4 @@
-module agcommits
+module github.com/feiandxs/agcommits
 
 go 1.21.4
 
