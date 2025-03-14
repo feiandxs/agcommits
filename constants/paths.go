@@ -5,8 +5,10 @@ import (
 	"path/filepath"
 )
 
-// ConfigFileName 配置文件名
-const ConfigFileName = ".agcommitsrc"
+const (
+	// ConfigFileName 配置文件名
+	ConfigFileName = ".agcommitsrc"
+)
 
 // GetConfigFilePath 获取配置文件的完整路径
 func GetConfigFilePath() (string, error) {

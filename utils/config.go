@@ -23,7 +23,14 @@ func ReadConfig(filePath string) (*Config, error) {
 	}(file)
 
 	scanner := bufio.NewScanner(file)
-	config := &Config{}
+	config := &Config{
+		// 设置默认值
+		CommitLocale: string(constants.DefaultLanguage),
+		MaxLength:    constants.DefaultMaxLength,
+		OpenAPIBase:  constants.DefaultOpenAIBaseURL,
+		OpenAIModel:  constants.DefaultOpenAIModel,
+		CommitType:   constants.DefaultCommitType,
+	}
 
 	for scanner.Scan() {
 		line := scanner.Text()
@@ -37,21 +44,24 @@ func ReadConfig(filePath string) (*Config, error) {
 		case "OPENAI_KEY":
 			config.OpenAIKey = value
 		case "OPENAI_API_BASE":
-			config.OpenAPIBase = value
+			if value != "" {
+				config.OpenAPIBase = value
+			}
 		case "OPENAI_MODEL":
-			config.OpenAIModel = value
+			if value != "" {
+				config.OpenAIModel = value
+			}
 		case "COMMIT_LOCALE":
-			config.CommitLocale = value
+			if constants.IsValidLanguage(value) {
+				config.CommitLocale = value
+			}
 		case "MAX_LENGTH":
-			// 将字符串转换为 int
-			config.MaxLength, err = strconv.Atoi(value)
-			if err != nil {
-				// 错误处理
+			if length, err := strconv.Atoi(value); err == nil && length > 0 {
+				config.MaxLength = length
 			}
 		case "COMMIT_TYPE":
 			config.CommitType = value
 		default:
-			// 处理未知的配置键
 			fmt.Printf("未知的配置键: %s\n", key)
 		}
 	}
@@ -126,25 +136,37 @@ func CreateAndSetupConfigFile(filePath string) error {
 	openAIKey := scanner.Text()
 
 	// 获取 OPENAI_API_BASE，带默认值
-	fmt.Print("请输入 OPENAI_API_BASE (默认: https://api.openai.com): ")
+	fmt.Printf("请输入 OPENAI_API_BASE (默认: %s): ", constants.DefaultOpenAIBaseURL)
 	scanner.Scan()
 	openAPIBase := scanner.Text()
 	if openAPIBase == "" {
-		openAPIBase = "https://api.openai.com"
+		openAPIBase = constants.DefaultOpenAIBaseURL
 	}
 
 	// 获取 OPENAI_MODEL，带默认值
-	fmt.Print("请输入 OPENAI_MODEL (默认: gpt-3.5-turbo-1106): ")
+	fmt.Printf("请输入 OPENAI_MODEL (默认: %s): ", constants.DefaultOpenAIModel)
 	scanner.Scan()
 	openAIModel := scanner.Text()
 	if openAIModel == "" {
-		openAIModel = "gpt-3.5-turbo-1106"
+		openAIModel = constants.DefaultOpenAIModel
 	}
 
 	// 获取 COMMIT_LOCALE
-	fmt.Print("请输入 COMMIT_LOCALE（提交消息的语言环境，如 'en' 或 'zh'）: ")
+	supportedLangs := make([]string, 0)
+	for _, code := range constants.GetSupportedLanguages() {
+		supportedLangs = append(supportedLangs,
+			fmt.Sprintf("%s(%s)", code, constants.GetLanguageDisplay(code)))
+	}
+
+	fmt.Printf("请输入 COMMIT_LOCALE（提交消息的语言环境，支持: %s，默认: %s）: ",
+		strings.Join(supportedLangs, ", "),
+		constants.DefaultLanguage)
+
 	scanner.Scan()
 	commitLocale := scanner.Text()
+	if !constants.IsValidLanguage(commitLocale) {
+		commitLocale = string(constants.DefaultLanguage)
+	}
 
 	// 获取 MAX_LENGTH，带默认值
 	fmt.Print("请输入 MAX_LENGTH（提交消息的最大长度，默认: 150）: ")
