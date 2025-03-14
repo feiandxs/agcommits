@@ -4,10 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"os/user"
-	"path/filepath"
 	"strconv"
 	"strings"
+
+	"github.com/feiandxs/agcommits/constants"
 )
 
 func ReadConfig(filePath string) (*Config, error) {
@@ -86,12 +86,10 @@ func checkConfigKeyExists(filePath, key string) (bool, error) {
 
 // CheckRequiredConfigsInFile 检查配置文件中是否存在指定的一组配置键。
 func CheckRequiredConfigsInFile(requiredKeys []string) error {
-	usr, err := user.Current()
+	agCommitsPath, err := constants.GetConfigFilePath()
 	if err != nil {
-		return fmt.Errorf("无法获取当前用户: %v", err)
+		return fmt.Errorf("获取配置文件路径时出错: %v", err)
 	}
-
-	agCommitsPath := filepath.Join(usr.HomeDir, ".agcommits")
 
 	for _, key := range requiredKeys {
 		exists, err := checkConfigKeyExists(agCommitsPath, key)

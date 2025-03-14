@@ -2,6 +2,7 @@ package openai_api
 
 import (
 	"fmt"
+
 	"github.com/feiandxs/agcommits/utils"
 )
 
@@ -31,7 +32,6 @@ Choose a type that best describes the git diff:
 
 // generatePrompt 生成提示字符串
 func generatePrompt(config *utils.Config) string {
-	// 确定提交类型
 	commitType := "default"
 	if config.CommitType == "conventional" {
 		commitType = "conventional"
@@ -41,12 +41,30 @@ func generatePrompt(config *utils.Config) string {
 	description := commitTypeDescriptions[commitType]
 
 	prompt := fmt.Sprintf(
-		"Generate a concise git commit message written in present tense for the following code diff with the given specifications below:\n"+
-			"Message language: %s\n"+
-			"Commit message must be a maximum of %d characters.\n"+
-			"Exclude anything unnecessary such as translation. Your entire response will be passed directly into git commit.\n"+
-			"%s\n%s",
-		config.CommitLocale, config.MaxLength, description, format,
+		`Analyze the following code diff carefully and generate a meaningful git commit message:
+
+1. First, examine the changes thoroughly:
+   - What files were modified?
+   - What is the core purpose of these changes?
+   - How do these changes improve the codebase?
+
+2. Then, generate a concise git commit message that:
+   - Is written in present tense
+   - Clearly explains the main purpose of the changes
+   - Highlights any important technical decisions
+   - Follows these specifications:
+     - Language: %s
+     - Maximum length: %d characters
+     - Format: %s
+
+3. Requirements:
+   - Be specific and meaningful
+   - Focus on the "what" and "why", not just the "how"
+   - Exclude unnecessary information or translations
+   %s
+
+Your response should be a single, well-thought-out commit message that can be used directly in git commit.`,
+		config.CommitLocale, config.MaxLength, format, description,
 	)
 	return prompt
 }

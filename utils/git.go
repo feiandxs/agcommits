@@ -38,9 +38,9 @@ func HasStagedChanges() (bool, error) {
 	return strings.TrimSpace(string(output)) != "", nil
 }
 
-// GetGitDiff 获取当前 Git 仓库的 diff 信息。
+// GetGitDiff 获取当前 Git 仓库已暂存的 diff 信息。
 func GetGitDiff() (string, error) {
-	cmd := exec.Command("git", "diff")
+	cmd := exec.Command("git", "diff", "--cached")
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		return "", err

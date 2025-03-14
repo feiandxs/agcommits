@@ -2,21 +2,20 @@ package main
 
 import (
 	"fmt"
+	"os"
+	"strings"
+
+	"github.com/feiandxs/agcommits/constants"
 	"github.com/feiandxs/agcommits/service/openai_api"
 	"github.com/feiandxs/agcommits/utils"
-	"os"
-	"os/user"
-	"path/filepath"
 )
 
 func main() {
-	usr, err := user.Current()
+	agCommitsPath, err := constants.GetConfigFilePath()
 	if err != nil {
-		fmt.Println("获取当前用户时出错:", err)
+		fmt.Println("获取配置文件路径时出错:", err)
 		return
 	}
-
-	agCommitsPath := filepath.Join(usr.HomeDir, ".agcommits")
 
 	// 检查配置文件是否存在
 	if _, err := os.Stat(agCommitsPath); os.IsNotExist(err) {
@@ -62,6 +61,16 @@ func main() {
 		fmt.Println("获取 Git Diff 信息时出错:", err)
 		return
 	}
+
+	// 检查是否有实际的更改
+	if strings.TrimSpace(diff) == "" {
+		fmt.Println("没有发现任何文件更改")
+		return
+	}
+
+	// 显示格式化的diff信息
+	fmt.Println(utils.FormatDiff(diff))
+	fmt.Println("正在生成提交信息...")
 
 	// 调用 ChatCompletionBlocking 函数
 	res, err := openai_api.ChatCompletionBlocking(config, diff)
