@@ -1,46 +1,64 @@
 package constants
 
-// LanguageCode 语言代码类型
+// LanguageCode represents the type for language codes
 type LanguageCode string
 
-// 支持的语言代码
+// Supported language codes
 const (
-	// DefaultLanguage 默认语言
+	// DefaultLanguage specifies the default language for the application
 	DefaultLanguage = EN
 
-	// 语言代码定义
-	EN LanguageCode = "en"
-	ZH LanguageCode = "zh"
-	// 未来可以添加更多语言
-	// FR LanguageCode = "fr"
-	// JA LanguageCode = "ja"
+	// Language code definitions
+	EN LanguageCode = "en" // English
+	ZH LanguageCode = "zh" // Chinese
+	ES LanguageCode = "es" // Spanish
+	HI LanguageCode = "hi" // Hindi
+	AR LanguageCode = "ar" // Arabic
+	FR LanguageCode = "fr" // French
+	DE LanguageCode = "de" // German
+	PT LanguageCode = "pt" // Portuguese
+	JA LanguageCode = "ja" // Japanese
+	KO LanguageCode = "ko" // Korean
+	RU LanguageCode = "ru" // Russian
 )
 
-// languageDisplayNames 语言代码到显示名称的映射
+// languageDisplayNames maps language codes to their native display names
 var languageDisplayNames = map[LanguageCode]string{
 	EN: "English",
 	ZH: "中文",
-	// 未来可以添加更多语言
-	// FR: "Français",
-	// JA: "日本語",
+	ES: "Español",
+	HI: "हिन्दी",
+	AR: "العربية",
+	FR: "Français",
+	DE: "Deutsch",
+	PT: "Português",
+	JA: "日本語",
+	KO: "한국어",
+	RU: "Русский",
 }
 
-// languagePromptNames 语言代码到AI提示中使用的名称的映射
+// languagePromptNames maps language codes to their English names for AI prompts
 var languagePromptNames = map[LanguageCode]string{
 	EN: "English",
-	ZH: "中文",
-	// 未来可以添加更多语言
-	// FR: "French",
-	// JA: "Japanese",
+	ZH: "Chinese",
+	ES: "Spanish",
+	HI: "Hindi",
+	AR: "Arabic",
+	FR: "French",
+	DE: "German",
+	PT: "Portuguese",
+	JA: "Japanese",
+	KO: "Korean",
+	RU: "Russian",
 }
 
-// IsValidLanguage 检查语言代码是否有效
+// IsValidLanguage checks if the provided language code is valid
 func IsValidLanguage(code string) bool {
 	_, ok := languageDisplayNames[LanguageCode(code)]
 	return ok
 }
 
-// GetLanguageDisplay 获取语言的显示名称
+// GetLanguageDisplay returns the native display name for a language code
 func GetLanguageDisplay(code LanguageCode) string {
 	if name, ok := languageDisplayNames[code]; ok {
 		return name
@@ -48,7 +66,7 @@ func GetLanguageDisplay(code LanguageCode) string {
 	return string(code)
 }
 
-// GetLanguagePromptName 获取语言在AI提示中使用的名称
+// GetLanguagePromptName returns the English name of the language for AI prompts
 func GetLanguagePromptName(code LanguageCode) string {
 	if name, ok := languagePromptNames[code]; ok {
 		return name
@@ -56,7 +74,7 @@ func GetLanguagePromptName(code LanguageCode) string {
 	return string(code)
 }
 
-// GetSupportedLanguages 获取所有支持的语言代码
+// GetSupportedLanguages returns a slice of all supported language codes
 func GetSupportedLanguages() []LanguageCode {
 	languages := make([]LanguageCode, 0, len(languageDisplayNames))
 	for code := range languageDisplayNames {
