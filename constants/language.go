@@ -1,7 +1,19 @@
 package constants
 
+import (
+	"fmt"
+)
+
 // LanguageCode represents the type for language codes
 type LanguageCode string
+
+// LanguageInfo represents all information about a language
+type LanguageInfo struct {
+	Index       int    // Display index for selection
+	NativeName  string // Name in native language
+	EnglishName string // Name in English
+	Description string // Optional description or region info
+}
 
 // Supported language codes
 const (
@@ -22,62 +34,75 @@ const (
 	RU LanguageCode = "ru" // Russian
 )
 
-// languageDisplayNames maps language codes to their native display names
-var languageDisplayNames = map[LanguageCode]string{
-	EN: "English",
-	ZH: "中文",
-	ES: "Español",
-	HI: "हिन्दी",
-	AR: "العربية",
-	FR: "Français",
-	DE: "Deutsch",
-	PT: "Português",
-	JA: "日本語",
-	KO: "한국어",
-	RU: "Русский",
+// languageInfo stores all language related information
+var languageInfo = map[LanguageCode]LanguageInfo{
+	EN: {Index: 1, NativeName: "English", EnglishName: "English", Description: "Default"},
+	ZH: {Index: 2, NativeName: "中文", EnglishName: "Chinese", Description: "Simplified Chinese"},
+	ES: {Index: 3, NativeName: "Español", EnglishName: "Spanish", Description: "Spanish"},
+	HI: {Index: 4, NativeName: "हिन्दी", EnglishName: "Hindi", Description: "Hindi"},
+	AR: {Index: 5, NativeName: "العربية", EnglishName: "Arabic", Description: "Arabic"},
+	FR: {Index: 6, NativeName: "Français", EnglishName: "French", Description: "French"},
+	DE: {Index: 7, NativeName: "Deutsch", EnglishName: "German", Description: "German"},
+	PT: {Index: 8, NativeName: "Português", EnglishName: "Portuguese", Description: "Portuguese"},
+	JA: {Index: 9, NativeName: "日本語", EnglishName: "Japanese", Description: "Japanese"},
+	KO: {Index: 10, NativeName: "한국어", EnglishName: "Korean", Description: "Korean"},
+	RU: {Index: 11, NativeName: "Русский", EnglishName: "Russian", Description: "Russian"},
 }
 
-// languagePromptNames maps language codes to their English names for AI prompts
-var languagePromptNames = map[LanguageCode]string{
-	EN: "English",
-	ZH: "Chinese",
-	ES: "Spanish",
-	HI: "Hindi",
-	AR: "Arabic",
-	FR: "French",
-	DE: "German",
-	PT: "Portuguese",
-	JA: "Japanese",
-	KO: "Korean",
-	RU: "Russian",
+// GetLanguageByIndex returns the language code for a given index
+func GetLanguageByIndex(index int) (LanguageCode, bool) {
+	for code, info := range languageInfo {
+		if info.Index == index {
+			return code, true
+		}
+	}
+	return "", false
+}
+
+// GetLanguageInfo returns the complete language information for a given code
+func GetLanguageInfo(code LanguageCode) (LanguageInfo, bool) {
+	info, ok := languageInfo[code]
+	return info, ok
+}
+
+// GetFormattedLanguageList returns a formatted list of languages for display
+func GetFormattedLanguageList() []string {
+	result := make([]string, len(languageInfo))
+	for code, info := range languageInfo {
+		result[info.Index-1] = fmt.Sprintf("%2d. %-10s (%s)",
+			info.Index,
+			info.EnglishName,
+			info.NativeName)
+	}
+	return result
 }
 
 // IsValidLanguage checks if the provided language code is valid
 func IsValidLanguage(code string) bool {
-	_, ok := languageDisplayNames[LanguageCode(code)]
+	_, ok := languageInfo[LanguageCode(code)]
 	return ok
 }
 
 // GetLanguageDisplay returns the native display name for a language code
 func GetLanguageDisplay(code LanguageCode) string {
-	if name, ok := languageDisplayNames[code]; ok {
-		return name
+	if info, ok := languageInfo[code]; ok {
+		return info.NativeName
 	}
 	return string(code)
 }
 
 // GetLanguagePromptName returns the English name of the language for AI prompts
 func GetLanguagePromptName(code LanguageCode) string {
-	if name, ok := languagePromptNames[code]; ok {
-		return name
+	if info, ok := languageInfo[code]; ok {
+		return info.EnglishName
 	}
 	return string(code)
 }
 
 // GetSupportedLanguages returns a slice of all supported language codes
 func GetSupportedLanguages() []LanguageCode {
-	languages := make([]LanguageCode, 0, len(languageDisplayNames))
-	for code := range languageDisplayNames {
+	languages := make([]LanguageCode, 0, len(languageInfo))
+	for code := range languageInfo {
 		languages = append(languages, code)
 	}
 	return languages
