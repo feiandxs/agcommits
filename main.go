@@ -8,7 +8,6 @@ import (
 	"github.com/feiandxs/agcommits/config"
 	"github.com/feiandxs/agcommits/service/openai_api"
 	"github.com/feiandxs/agcommits/utils"
-	"github.com/gookit/color"
 	"github.com/shibukawa/cdiff"
 )
 
@@ -128,7 +127,9 @@ func main() {
 		fmt.Println("\n========== 暂存区更改内容 ==========")
 		// 获取当前目录作为文件路径前缀
 		diffResult := cdiff.Diff("", diff, cdiff.LineByLine)
-		color.Print(diffResult.Format(cdiff.GooKitColorTheme))
+		// 使用String方法直接获取格式化后的字符串，然后手动添加颜色
+		diffText := diffResult.String()
+		printColoredDiff(diffText)
 		fmt.Println("===================================\n")
 	}
 

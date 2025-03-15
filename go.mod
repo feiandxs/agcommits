@@ -9,6 +9,8 @@ require (
 
 require (
 	github.com/gookit/color v1.5.4 // indirect
+	github.com/sergi/go-diff v1.0.0 // indirect
+	github.com/shibukawa/cdiff v0.1.3 // indirect
 	github.com/xo/terminfo v0.0.0-20210125001918-ca9a967f8778 // indirect
 )
 
