@@ -32,7 +32,6 @@ func GenerateCommitMessage(cfg *config.Config, diff string) (string, error) {
 
 	// 将config.Config转换为utils.Config
 	utilsConfig := convertConfig(cfg)
-	fmt.Println("diff is ", diff)
 	// 构建提示词
 	prompt := generatePrompt(utilsConfig, diff)
 
