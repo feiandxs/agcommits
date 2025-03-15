@@ -170,31 +170,38 @@ func printColoredDiff(diff string) {
 				// 文件头部信息
 				fatihcolor.Cyan("%s", line)
 			} else {
-				// 添加的行
-				fatihcolor.Green("%s", line)
+				// 添加的行 - 绿色
+				green := fatihcolor.New(fatihcolor.FgGreen, fatihcolor.Bold)
+				green.Print("+ ")
+				green.Println(line[1:])
 			}
 		case '-':
 			if len(line) > 1 && line[1] == '-' {
 				// 文件头部信息
 				fatihcolor.Cyan("%s", line)
 			} else {
-				// 删除的行
-				fatihcolor.Red("%s", line)
+				// 删除的行 - 红色
+				red := fatihcolor.New(fatihcolor.FgRed, fatihcolor.Bold)
+				red.Print("- ")
+				red.Println(line[1:])
 			}
 		case '@':
 			// 区块信息
-			fatihcolor.Magenta("%s", line)
+			cyan := fatihcolor.New(fatihcolor.FgCyan)
+			cyan.Println(line)
 		case 'd':
 			if strings.HasPrefix(line, "diff --git") {
 				// diff 命令行
-				fatihcolor.Yellow("%s", line)
+				yellow := fatihcolor.New(fatihcolor.FgYellow)
+				yellow.Println(line)
 			} else {
 				fmt.Println(line)
 			}
 		case 'i':
 			if strings.HasPrefix(line, "index ") {
 				// index 行
-				fatihcolor.Yellow("%s", line)
+				yellow := fatihcolor.New(fatihcolor.FgYellow)
+				yellow.Println(line)
 			} else {
 				fmt.Println(line)
 			}

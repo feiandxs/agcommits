@@ -91,7 +91,7 @@ func InitGitRepository() error {
 
 // ConfirmGitInit 询问用户是否要初始化Git仓库
 func ConfirmGitInit() bool {
-	fmt.Println("当前目录不是Git仓库，是否要初始化一个新的Git仓库？(y/n，默认: n)")
+	fmt.Println("当前目录不是Git仓库，是否要初始化一个新的Git仓库？(y/n，默认: y)")
 
 	reader := bufio.NewReader(os.Stdin)
 	response, err := reader.ReadString('\n')
@@ -101,12 +101,12 @@ func ConfirmGitInit() bool {
 	}
 	response = strings.TrimSpace(response)
 
-	return response == "y" || response == "Y"
+	return response != "n" && response != "N"
 }
 
 // ConfirmGitAdd 询问用户是否要执行 git add . 命令
 func ConfirmGitAdd() bool {
-	fmt.Println("暂存区没有更改，是否要执行 git add . 命令？(y/n，默认: n)")
+	fmt.Println("暂存区没有更改，是否要执行 git add . 命令？(y/n，默认: y)")
 
 	reader := bufio.NewReader(os.Stdin)
 	response, err := reader.ReadString('\n')
@@ -116,5 +116,5 @@ func ConfirmGitAdd() bool {
 	}
 	response = strings.TrimSpace(response)
 
-	return response == "y" || response == "Y"
+	return response != "n" && response != "N"
 }
