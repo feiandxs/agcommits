@@ -2,6 +2,7 @@ package utils
 
 import (
 	"bufio"
+	"bytes"
 	"fmt"
 	"os"
 	"os/exec"
@@ -11,39 +12,29 @@ import (
 // IsGitRepository 检查当前目录是否为 Git 仓库。
 func IsGitRepository() (bool, error) {
 	cmd := exec.Command("git", "rev-parse", "--is-inside-work-tree")
-	output, err := cmd.CombinedOutput()
-	outputStr := strings.TrimSpace(string(output))
-
-	// 如果命令执行成功，检查输出是否为 'true'
-	if err == nil {
-		return outputStr == "true", nil
-	}
-
-	// 如果有错误，并且输出不是 'true'，则可能是因为当前目录不是 Git 仓库
-	if outputStr != "true" {
-		return false, nil
-	}
-
-	// 其他错误
-	return false, err
-}
-
-// HasStagedChanges 检查是否执行过 'git add .'
-func HasStagedChanges() (bool, error) {
-	cmd := exec.Command("git", "diff", "--cached")
-	output, err := cmd.CombinedOutput()
+	err := cmd.Run()
 	if err != nil {
-		return false, err
+		return false, nil // 不是 Git 仓库，但不视为错误
 	}
-	return strings.TrimSpace(string(output)) != "", nil
+	return true, nil
 }
 
-// GetGitDiff 获取当前 Git 仓库已暂存的 diff 信息。
+// HasStagedChanges 检查是否有暂存的更改
+func HasStagedChanges() (bool, error) {
+	cmd := exec.Command("git", "diff", "--cached", "--name-only")
+	output, err := cmd.Output()
+	if err != nil {
+		return false, fmt.Errorf("执行 git diff 命令失败: %v", err)
+	}
+	return len(strings.TrimSpace(string(output))) > 0, nil
+}
+
+// GetGitDiff 获取 Git 暂存区的 diff 信息
 func GetGitDiff() (string, error) {
 	cmd := exec.Command("git", "diff", "--cached")
-	output, err := cmd.CombinedOutput()
+	output, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("执行 git diff 命令失败: %v", err)
 	}
 	return string(output), nil
 }
@@ -65,13 +56,24 @@ func ConfirmCommitMessage(commitMsg string) bool {
 	return response == "y" || response == ""
 }
 
-// PerformGitCommit 执行 Git 提交操作。
-func PerformGitCommit(commitMsg string) error {
-	cmd := exec.Command("git", "commit", "-m", commitMsg)
+// PerformGitCommit 执行 Git 提交
+func PerformGitCommit(message string) error {
+	cmd := exec.Command("git", "commit", "-m", message)
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("执行 git commit 时出错: %v", err)
+		return fmt.Errorf("git commit 失败: %v, %s", err, stderr.String())
 	}
+	return nil
+}
 
-	fmt.Println("Git 提交成功！")
+// GitAddAll 执行 git add . 命令
+func GitAddAll() error {
+	cmd := exec.Command("git", "add", ".")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("git add . 失败: %v, %s", err, stderr.String())
+	}
 	return nil
 }

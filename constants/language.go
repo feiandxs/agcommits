@@ -68,7 +68,7 @@ func GetLanguageInfo(code LanguageCode) (LanguageInfo, bool) {
 // GetFormattedLanguageList returns a formatted list of languages for display
 func GetFormattedLanguageList() []string {
 	result := make([]string, len(languageInfo))
-	for code, info := range languageInfo {
+	for _, info := range languageInfo {
 		result[info.Index-1] = fmt.Sprintf("%2d. %-10s (%s)",
 			info.Index,
 			info.EnglishName,
