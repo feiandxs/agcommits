@@ -28,17 +28,29 @@ Choose a type that best describes the git diff:
 - chore: Other changes that don't modify src or test files
 - revert: Reverts a previous commit
 - feat: A new feature
-- fix: A bug fix`,
+- fix: A bug fix
+  
+  you should generate a commit message like : 
+  feat: xxxxx
+  or 
+  fix: xxxxx
+  or 
+  refactor: xxxxx
+  or 
+  perf: xxxxx
+  or 
+  test: xxxxx
+`,
 }
 
 // generatePrompt 生成提示字符串
-func generatePrompt(config *utils.Config) string {
+func generatePrompt(config *utils.Config, diff string) string {
 	// 确定提交类型
-	commitType := "default"
+	commitType := "conventional"
 	if config.CommitType == "conventional" {
 		commitType = "conventional"
 	}
-
+	// fmt.Println("commitType is ", commitType)
 	format := commitTypeFormats[commitType]
 	description := commitTypeDescriptions[commitType]
 
@@ -50,8 +62,9 @@ func generatePrompt(config *utils.Config) string {
 			"Message language: %s\n"+
 			"Commit message must be a maximum of %d characters.\n"+
 			"Exclude anything unnecessary such as translation. Your entire response will be passed directly into git commit.\n"+
-			"%s\n%s",
-		languageName, config.MaxLength, description, format,
+			"%s\n%s\n\n"+
+			"Git Diff:\n%s",
+		languageName, config.MaxLength, description, format, diff,
 	)
 	return prompt
 }

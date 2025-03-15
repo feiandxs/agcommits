@@ -5,6 +5,7 @@ package openai_api
 import (
 	"context"
 	"fmt"
+
 	"github.com/feiandxs/agcommits/utils" // 导入 utils 包以使用 Config 结构体
 	"github.com/sashabaranov/go-openai"
 )
@@ -23,19 +24,20 @@ func generateClient(config *utils.Config) {
 func ChatCompletionBlocking(config *utils.Config, diff string) (string, error) {
 	generateClient(config)
 
+	// 构建提示词
+	prompt := generatePrompt(config, diff)
+
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
 			Model: model,
 			Messages: []openai.ChatCompletionMessage{
 				{
-					Role:    openai.ChatMessageRoleSystem,
-					Content: generatePrompt(config),
-				}, {
 					Role:    openai.ChatMessageRoleUser,
-					Content: diff,
+					Content: prompt,
 				},
 			},
+			MaxTokens: config.MaxLength,
 		})
 	if err != nil {
 		fmt.Printf("completion error: %v\n", err)

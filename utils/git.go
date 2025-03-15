@@ -77,3 +77,44 @@ func GitAddAll() error {
 	}
 	return nil
 }
+
+// InitGitRepository 在当前目录初始化一个新的 Git 仓库
+func InitGitRepository() error {
+	cmd := exec.Command("git", "init")
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("git init 失败: %v, %s", err, stderr.String())
+	}
+	return nil
+}
+
+// ConfirmGitInit 询问用户是否要初始化Git仓库
+func ConfirmGitInit() bool {
+	fmt.Println("当前目录不是Git仓库，是否要初始化一个新的Git仓库？(y/n，默认: n)")
+
+	reader := bufio.NewReader(os.Stdin)
+	response, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("读取输入时出错:", err)
+		return false
+	}
+	response = strings.TrimSpace(response)
+
+	return response == "y" || response == "Y"
+}
+
+// ConfirmGitAdd 询问用户是否要执行 git add . 命令
+func ConfirmGitAdd() bool {
+	fmt.Println("暂存区没有更改，是否要执行 git add . 命令？(y/n，默认: n)")
+
+	reader := bufio.NewReader(os.Stdin)
+	response, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("读取输入时出错:", err)
+		return false
+	}
+	response = strings.TrimSpace(response)
+
+	return response == "y" || response == "Y"
+}

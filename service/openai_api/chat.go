@@ -5,32 +5,48 @@ import (
 	"fmt"
 
 	"github.com/feiandxs/agcommits/config"
+	"github.com/feiandxs/agcommits/utils"
 	"github.com/sashabaranov/go-openai"
 )
 
+// 将config.Config转换为utils.Config
+func convertConfig(cfg *config.Config) *utils.Config {
+	return &utils.Config{
+		OpenAIKey:    cfg.OpenAIKey,
+		OpenAPIBase:  cfg.OpenAPIBase,
+		OpenAIModel:  cfg.OpenAIModel,
+		CommitLocale: cfg.CommitLocale,
+		MaxLength:    cfg.MaxLength,
+		CommitType:   cfg.CommitType,
+	}
+}
+
 // GenerateCommitMessage 使用 OpenAI API 生成提交信息
 func GenerateCommitMessage(cfg *config.Config, diff string) (string, error) {
-	client := openai.NewClient(cfg.OpenAI.APIKey)
-	if cfg.OpenAI.BaseURL != "" {
-		config := openai.DefaultConfig(cfg.OpenAI.APIKey)
-		config.BaseURL = cfg.OpenAI.BaseURL
+	client := openai.NewClient(cfg.OpenAIKey)
+	if cfg.OpenAPIBase != "" {
+		config := openai.DefaultConfig(cfg.OpenAIKey)
+		config.BaseURL = cfg.OpenAPIBase
 		client = openai.NewClientWithConfig(config)
 	}
 
+	// 将config.Config转换为utils.Config
+	utilsConfig := convertConfig(cfg)
+	fmt.Println("diff is ", diff)
 	// 构建提示词
-	prompt := buildPrompt(diff, cfg.Commit.Language)
+	prompt := generatePrompt(utilsConfig, diff)
 
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model: cfg.OpenAI.Model,
+			Model: cfg.OpenAIModel,
 			Messages: []openai.ChatCompletionMessage{
 				{
 					Role:    openai.ChatMessageRoleUser,
 					Content: prompt,
 				},
 			},
-			MaxTokens: cfg.Commit.MaxLength,
+			MaxTokens: cfg.MaxLength,
 		},
 	)
 
@@ -43,18 +59,4 @@ func GenerateCommitMessage(cfg *config.Config, diff string) (string, error) {
 	}
 
 	return resp.Choices[0].Message.Content, nil
-}
-
-// buildPrompt 构建用于生成提交信息的提示词
-func buildPrompt(diff string, language string) string {
-	// 基础提示词
-	basePrompt := "请根据以下 Git diff 内容生成一个简洁的提交信息。\n" +
-		"要求：\n" +
-		"1. 使用 %s 语言\n" +
-		"2. 简洁明了，突出重点\n" +
-		"3. 使用祈使句\n" +
-		"4. 不要超过 50 个字符\n\n" +
-		"Git Diff 内容：\n%s"
-
-	return fmt.Sprintf(basePrompt, language, diff)
 }
