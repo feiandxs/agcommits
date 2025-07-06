@@ -127,3 +127,6 @@ fabric.properties
 # Ignore all local history of files
 .history
 .ionide
+
+main.exe
+main
