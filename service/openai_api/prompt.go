@@ -57,14 +57,21 @@ func generatePrompt(config *utils.Config, diff string) string {
 	// 获取语言的AI提示名称
 	languageName := constants.GetLanguagePromptName(constants.LanguageCode(config.CommitLocale))
 
+	// 根据语言添加额外要求
+	languageRequirement := ""
+	if config.CommitLocale == "en" {
+		languageRequirement = "IMPORTANT: Use only lowercase letters in the commit message. No uppercase letters allowed.\n"
+	}
+
 	prompt := fmt.Sprintf(
 		"Generate a concise git commit message written in present tense for the following code diff with the given specifications below:\n"+
 			"Message language: %s\n"+
 			"Commit message must be a maximum of %d characters.\n"+
+			"%s"+
 			"Exclude anything unnecessary such as translation. Your entire response will be passed directly into git commit.\n"+
 			"%s\n%s\n\n"+
 			"Git Diff:\n%s",
-		languageName, config.MaxLength, description, format, diff,
+		languageName, config.MaxLength, languageRequirement, description, format, diff,
 	)
 	return prompt
 }
