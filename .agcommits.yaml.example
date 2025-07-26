@@ -1,0 +1,73 @@
+# AGCOMMITS 配置文件示例
+# 
+# 本文件包含所有可用的配置选项及其说明
+# 使用时请复制此文件为 .agcommits.yaml 并修改相应的值
+#
+# 配置文件优先级：
+# 1. 项目根目录下的 .agcommits.yaml（本地配置）
+# 2. 用户主目录下的 ~/.agcommitsrc.yaml（全局配置）
+
+# ===== 必填配置 =====
+
+# OpenAI API 密钥
+# 用于调用 AI 服务生成智能提交信息
+# 支持 OpenAI 或兼容 API（如 SiliconFlow、通义千问等）
+openai_key: "sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+# API 基础 URL
+# OpenAI 官方：https://api.openai.com
+# SiliconFlow：https://api.siliconflow.cn
+# 其他兼容服务请查阅相应文档
+openai_api_base: "https://api.siliconflow.cn"
+
+# AI 模型名称
+# OpenAI: gpt-3.5-turbo, gpt-4, gpt-4-turbo 等
+# SiliconFlow 推荐：Qwen/Qwen2.5-Coder-7B-Instruct
+# 请根据您的 API 服务选择合适的模型
+openai_model: "Qwen/Qwen2.5-Coder-7B-Instruct"
+
+# ===== 可选配置 =====
+
+# 提交信息语言
+# zh: 中文（默认）
+# en: 英文
+# 注：英文提交信息会自动转换为小写
+commit_locale: "zh"
+
+# 提交信息最大长度
+# 建议范围：50-200 字符
+# 默认值：150
+max_length: 150
+
+# 提交信息格式类型
+# conventional: 约定式提交格式（推荐）
+#   格式：<type>(<scope>): <subject>
+#   示例：feat(auth): 添加用户登录功能
+# default: 默认格式（自由格式）
+commit_type: "conventional"
+
+# 自动添加文件到暂存区
+# true: 当没有暂存文件时，自动执行 git add . 无需确认
+# false: 询问用户是否要添加文件（默认）
+auto_add: false
+
+# 自动提交
+# true: 生成提交信息后自动执行 git commit 无需确认
+# false: 显示生成的提交信息并询问用户确认（默认）
+auto_commit: false
+
+# ===== 使用示例 =====
+#
+# 1. 最小配置（仅必填项）：
+# openai_key: "your-api-key"
+# openai_api_base: "https://api.siliconflow.cn"
+# openai_model: "Qwen/Qwen2.5-Coder-7B-Instruct"
+#
+# 2. 完全自动化配置：
+# 在上述基础上添加：
+# auto_add: true
+# auto_commit: true
+#
+# 3. 英文项目配置：
+# 在最小配置基础上添加：
+# commit_locale: "en"
