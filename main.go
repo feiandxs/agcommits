@@ -94,9 +94,17 @@ func main() {
 		return
 	}
 
-	// 如果没有暂存的更改，询问用户是否要执行 git add .
+	// 如果没有暂存的更改，根据配置决定是否自动执行或询问用户
 	if !hasStagedChanges {
-		if utils.ConfirmGitAdd() {
+		shouldAdd := cfg.AutoAdd
+		if !cfg.AutoAdd {
+			// 如果未启用自动模式，询问用户
+			shouldAdd = utils.ConfirmGitAdd()
+		} else {
+			fatihcolor.Green("自动模式已启用，正在自动执行 git add ...")
+		}
+
+		if shouldAdd {
 			fatihcolor.Yellow("正在执行 git add . 命令...")
 			if err := utils.GitAddAll(); err != nil {
 				fatihcolor.Red("执行 git add . 命令失败: %v", err)
@@ -141,8 +149,19 @@ func main() {
 		return
 	}
 
-	// 显示提交消息并询问用户是否确认使用
-	if utils.ConfirmCommitMessage(commitMsg) {
+	// 根据配置决定是否自动提交或询问用户
+	shouldCommit := cfg.AutoCommit
+	if !cfg.AutoCommit {
+		// 如果未启用自动提交，询问用户
+		shouldCommit = utils.ConfirmCommitMessage(commitMsg)
+	} else {
+		// 自动模式下也显示生成的提交消息
+		fatihcolor.Green("自动提交模式已启用")
+		fmt.Println("AI 生成的 Git 提交消息如下：")
+		fmt.Println(commitMsg)
+	}
+
+	if shouldCommit {
 		// 执行 Git 提交
 		fatihcolor.Yellow("正在执行 Git 提交...")
 		if err := utils.PerformGitCommit(commitMsg); err != nil {

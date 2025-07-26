@@ -123,6 +123,24 @@ func UpdateConfigField(fieldName, value string) error {
 			return fmt.Errorf("invalid max_length value: %s", value)
 		}
 		config.MaxLength = length
+	case "auto_add":
+		// 需要转换为bool
+		if value == "true" {
+			config.AutoAdd = true
+		} else if value == "false" {
+			config.AutoAdd = false
+		} else {
+			return fmt.Errorf("invalid auto_add value: %s (should be true or false)", value)
+		}
+	case "auto_commit":
+		// 需要转换为bool
+		if value == "true" {
+			config.AutoCommit = true
+		} else if value == "false" {
+			config.AutoCommit = false
+		} else {
+			return fmt.Errorf("invalid auto_commit value: %s (should be true or false)", value)
+		}
 	default:
 		return fmt.Errorf("unknown field: %s", fieldName)
 	}
@@ -142,6 +160,8 @@ func ListConfigFields() (map[string]interface{}, error) {
 		"commit_locale":   config.CommitLocale,
 		"max_length":      config.MaxLength,
 		"commit_type":     config.CommitType,
+		"auto_add":        config.AutoAdd,
+		"auto_commit":     config.AutoCommit,
 	}, nil
 }
 

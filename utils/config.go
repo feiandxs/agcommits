@@ -20,6 +20,10 @@ func GetConfigValue(cfg *config.Config, fieldName string) string {
 		return cfg.CommitLocale
 	case "max_length":
 		return strconv.Itoa(cfg.MaxLength)
+	case "auto_add":
+		return strconv.FormatBool(cfg.AutoAdd)
+	case "auto_commit":
+		return strconv.FormatBool(cfg.AutoCommit)
 	default:
 		return ""
 	}
