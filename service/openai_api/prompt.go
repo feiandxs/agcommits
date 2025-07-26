@@ -64,11 +64,13 @@ func generatePrompt(config *utils.Config, diff string) string {
 	}
 
 	prompt := fmt.Sprintf(
-		"Generate a concise git commit message written in present tense for the following code diff with the given specifications below:\n"+
+		"You are an experienced programmer who writes great commit messages.\n"+
+			"Generate a concise git commit message written in present tense for the following code diff with the given specifications below:\n"+
 			"Message language: %s\n"+
 			"Commit message must be a maximum of %d characters.\n"+
 			"%s"+
 			"Exclude anything unnecessary such as translation. Your entire response will be passed directly into git commit.\n"+
+			"IMPORTANT: Return ONLY the commit message itself. Do NOT include any markdown formatting, code blocks, or ``` symbols.\n"+
 			"%s\n%s\n\n"+
 			"Git Diff:\n%s",
 		languageName, config.MaxLength, languageRequirement, description, format, diff,
