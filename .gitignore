@@ -130,3 +130,11 @@ fabric.properties
 
 main.exe
 main
+
+# assistants
+/.claude/
+/CLAUDE.md
+GEMINI.md
+
+agcommits
+agcommits.exe
