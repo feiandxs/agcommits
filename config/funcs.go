@@ -27,6 +27,24 @@ func (c *Config) ValidateConfig() error {
 	return nil
 }
 
+// EffectiveResponseMaxLength 返回用于限制 AI 响应长度的有效值
+func (c *Config) EffectiveResponseMaxLength() int {
+	if c.ResponseMaxLength > 0 {
+		return c.ResponseMaxLength
+	}
+	return c.MaxLength
+}
+
+// normalizeResponseLength 确保新旧长度字段保持同步
+func (c *Config) normalizeResponseLength() {
+	if c.ResponseMaxLength <= 0 && c.MaxLength > 0 {
+		c.ResponseMaxLength = c.MaxLength
+	}
+	if c.MaxLength <= 0 && c.ResponseMaxLength > 0 {
+		c.MaxLength = c.ResponseMaxLength
+	}
+}
+
 // 检查配置文件是否存在
 func IsConfigFileExists() (bool, error) {
 	configPath, err := GetConfigFilePath()
@@ -76,6 +94,7 @@ func LoadConfig() (*Config, error) {
 	if err := yaml.Unmarshal(data, config); err != nil {
 		return nil, ErrConfigInvalid
 	}
+	config.normalizeResponseLength()
 	return config, nil
 }
 
@@ -85,8 +104,15 @@ func SaveConfig(config *Config) error {
 	if err != nil {
 		return err
 	}
+
+	config.normalizeResponseLength()
+	toSave := *config
+	toSave.normalizeResponseLength()
+	if toSave.ResponseMaxLength > 0 && toSave.MaxLength == toSave.ResponseMaxLength {
+		toSave.MaxLength = 0
+	}
 	// 转换为YAML
-	data, err := yaml.Marshal(config)
+	data, err := yaml.Marshal(&toSave)
 	if err != nil {
 		return err
 	}
@@ -116,6 +142,13 @@ func UpdateConfigField(fieldName, value string) error {
 		config.CommitLocale = value
 	case "commit_type":
 		config.CommitType = value
+	case "response_max_length":
+		var length int
+		if _, err := fmt.Sscanf(value, "%d", &length); err != nil {
+			return fmt.Errorf("invalid response_max_length value: %s", value)
+		}
+		config.ResponseMaxLength = length
+		config.normalizeResponseLength()
 	case "max_length":
 		// 需要转换为int
 		var length int
@@ -123,6 +156,7 @@ func UpdateConfigField(fieldName, value string) error {
 			return fmt.Errorf("invalid max_length value: %s", value)
 		}
 		config.MaxLength = length
+		config.normalizeResponseLength()
 	case "auto_add":
 		// 需要转换为bool
 		if value == "true" {
@@ -154,14 +188,14 @@ func ListConfigFields() (map[string]interface{}, error) {
 		return nil, err
 	}
 	return map[string]interface{}{
-		"openai_key":      config.OpenAIKey,
-		"openai_api_base": config.OpenAPIBase,
-		"openai_model":    config.OpenAIModel,
-		"commit_locale":   config.CommitLocale,
-		"max_length":      config.MaxLength,
-		"commit_type":     config.CommitType,
-		"auto_add":        config.AutoAdd,
-		"auto_commit":     config.AutoCommit,
+		"openai_key":          config.OpenAIKey,
+		"openai_api_base":     config.OpenAPIBase,
+		"openai_model":        config.OpenAIModel,
+		"commit_locale":       config.CommitLocale,
+		"response_max_length": config.ResponseMaxLength,
+		"commit_type":         config.CommitType,
+		"auto_add":            config.AutoAdd,
+		"auto_commit":         config.AutoCommit,
 	}, nil
 }
 

@@ -35,10 +35,10 @@ var ConfigFields = []ConfigField{
 		Help:        "提交信息语言(zh/en)",
 	},
 	{
-		Name:        "max_length",
+		Name:        "response_max_length",
 		Required:    false,
 		Placeholder: "150",
-		Help:        "提交信息最大长度",
+		Help:        "AI 响应（提交信息）最大长度",
 	},
 	{
 		Name:        "auto_add",

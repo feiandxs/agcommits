@@ -56,8 +56,8 @@ openai_api_base: "https://api.siliconflow.cn"
 openai_model: "Qwen/Qwen2.5-Coder-7B-Instruct"
 
 # Optional fields
-commit_locale: "en"      # Language: zh (Chinese) or en (English)
-max_length: 150          # Maximum commit message length
-auto_add: false          # Auto-execute git add
-auto_commit: false       # Auto-execute git commit
+commit_locale: "en"            # Language: zh (Chinese) or en (English)
+response_max_length: 150      # Maximum AI response length for commit message
+auto_add: false               # Auto-execute git add
+auto_commit: false            # Auto-execute git commit
 ```

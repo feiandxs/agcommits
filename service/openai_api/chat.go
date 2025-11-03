@@ -12,12 +12,13 @@ import (
 // 将config.Config转换为utils.Config
 func convertConfig(cfg *config.Config) *utils.Config {
 	return &utils.Config{
-		OpenAIKey:    cfg.OpenAIKey,
-		OpenAPIBase:  cfg.OpenAPIBase,
-		OpenAIModel:  cfg.OpenAIModel,
-		CommitLocale: cfg.CommitLocale,
-		MaxLength:    cfg.MaxLength,
-		CommitType:   cfg.CommitType,
+		OpenAIKey:         cfg.OpenAIKey,
+		OpenAPIBase:       cfg.OpenAPIBase,
+		OpenAIModel:       cfg.OpenAIModel,
+		CommitLocale:      cfg.CommitLocale,
+		ResponseMaxLength: cfg.EffectiveResponseMaxLength(),
+		MaxLength:         cfg.MaxLength,
+		CommitType:        cfg.CommitType,
 	}
 }
 
@@ -45,7 +46,7 @@ func GenerateCommitMessage(cfg *config.Config, diff string) (string, error) {
 					Content: prompt,
 				},
 			},
-			MaxTokens: cfg.MaxLength,
+			MaxTokens: cfg.EffectiveResponseMaxLength(),
 		},
 	)
 

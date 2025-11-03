@@ -37,7 +37,7 @@ func ChatCompletionBlocking(config *utils.Config, diff string) (string, error) {
 					Content: prompt,
 				},
 			},
-			MaxTokens: config.MaxLength,
+			MaxTokens: config.EffectiveResponseMaxLength(),
 		})
 	if err != nil {
 		fmt.Printf("completion error: %v\n", err)

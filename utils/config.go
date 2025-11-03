@@ -18,6 +18,8 @@ func GetConfigValue(cfg *config.Config, fieldName string) string {
 		return cfg.OpenAIModel
 	case "commit_locale":
 		return cfg.CommitLocale
+	case "response_max_length":
+		return strconv.Itoa(cfg.EffectiveResponseMaxLength())
 	case "max_length":
 		return strconv.Itoa(cfg.MaxLength)
 	case "auto_add":

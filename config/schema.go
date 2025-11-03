@@ -14,8 +14,11 @@ type Config struct {
 	// 提交消息的语言设置：zh（中文）或 en（英文）
 	CommitLocale string `yaml:"commit_locale"`
 
-	// 提交消息的最大字符长度限制
-	MaxLength int `yaml:"max_length"`
+	// 提交消息的最大字符长度限制（新字段，限制 AI 响应长度）
+	ResponseMaxLength int `yaml:"response_max_length,omitempty"`
+
+	// 兼容旧版配置的提交消息长度字段
+	MaxLength int `yaml:"max_length,omitempty"`
 
 	// 提交消息格式类型：conventional（约定式提交）或 default（默认格式）
 	CommitType string `yaml:"commit_type"`
@@ -30,13 +33,14 @@ type Config struct {
 // NewDefaultConfig returns default configuration
 func NewDefaultConfig() *Config {
 	return &Config{
-		OpenAIKey:    "",
-		OpenAPIBase:  "",
-		OpenAIModel:  "",
-		CommitLocale: "zh",
-		MaxLength:    150,
-		CommitType:   "conventional",
-		AutoAdd:      false, // 默认需要确认
-		AutoCommit:   false, // 默认需要确认
+		OpenAIKey:         "",
+		OpenAPIBase:       "",
+		OpenAIModel:       "",
+		CommitLocale:      "zh",
+		ResponseMaxLength: 150,
+		MaxLength:         150,
+		CommitType:        "conventional",
+		AutoAdd:           false, // 默认需要确认
+		AutoCommit:        false, // 默认需要确认
 	}
 }

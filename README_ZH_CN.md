@@ -56,8 +56,8 @@ openai_api_base: "https://api.siliconflow.cn"
 openai_model: "Qwen/Qwen2.5-Coder-7B-Instruct"
 
 # 可选字段
-commit_locale: "zh"      # 语言：zh（中文）或 en（英文）
-max_length: 150          # 提交信息最大长度
-auto_add: false          # 自动执行 git add
-auto_commit: false       # 自动执行 git commit
+commit_locale: "zh"            # 语言：zh（中文）或 en（英文）
+response_max_length: 150      # AI 响应（提交信息）最大长度
+auto_add: false               # 自动执行 git add
+auto_commit: false            # 自动执行 git commit
 ```

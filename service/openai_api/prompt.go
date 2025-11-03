@@ -73,7 +73,7 @@ func generatePrompt(config *utils.Config, diff string) string {
 			"IMPORTANT: Return ONLY the commit message itself. Do NOT include any markdown formatting, code blocks, or ``` symbols.\n"+
 			"%s\n%s\n\n"+
 			"Git Diff:\n%s",
-		languageName, config.MaxLength, languageRequirement, description, format, diff,
+		languageName, config.EffectiveResponseMaxLength(), languageRequirement, description, format, diff,
 	)
 	return prompt
 }

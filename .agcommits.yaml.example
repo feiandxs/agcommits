@@ -34,10 +34,10 @@ openai_model: "Qwen/Qwen2.5-Coder-7B-Instruct"
 # 注：英文提交信息会自动转换为小写
 commit_locale: "zh"
 
-# 提交信息最大长度
+# 提交信息最大长度（限制 AI 响应字符数）
 # 建议范围：50-200 字符
 # 默认值：150
-max_length: 150
+response_max_length: 150
 
 # 提交信息格式类型
 # conventional: 约定式提交格式（推荐）
